@@ -15,6 +15,4 @@ export class ItemGroup {
     @OneToMany(() => ItemGroup, g => g.parentGroup)
     children: ItemGroup[]
 
-    @OneToMany(() => Item, i => i.itemGroup)
-    items: Item[];
 }
