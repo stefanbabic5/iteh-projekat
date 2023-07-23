@@ -44,6 +44,17 @@ export async function getItems(req: Request, res: Response) {
    
 }
 
+export async function getOneItem(req: Request, res: Response) {
+    res.json(await AppDataSource.getRepository(Item).findOne({
+        where: {
+            id: Number(req.params.id),
+        },
+        relations: {
+            itemGroup: true
+        }
+    }))
+}
+
 export async function createItem(req: Request, res: Response) {
     const item = await AppDataSource.getRepository(Item).save(req.body);
     res.json(item);

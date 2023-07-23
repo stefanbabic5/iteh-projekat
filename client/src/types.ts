@@ -69,3 +69,10 @@ export interface RegisterUser {
     repeat: string,
     password: string
 }
+
+export interface CartItems {
+    [itemId: number]: {
+      count: number,
+      item: Item
+    }
+}

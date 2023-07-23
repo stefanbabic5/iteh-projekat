@@ -20,6 +20,7 @@ export default function UserNavbar(props: Props) {
                 <Nav.Item as={NavLink} to='/shop'>Shop</Nav.Item>
             </Nav>
             <Nav pullRight>
+                <Nav.Item as={NavLink} to='/cart'>Cart</Nav.Item>
                 <Dropdown title={props.user.firstName + ' ' + props.user.lastName}>
                     <Dropdown.Item onClick={props.onLogout}>Logout</Dropdown.Item>
                 </Dropdown>
