@@ -1,15 +1,19 @@
 import express, { Express, Request, Response } from 'express';
 import dotenv from "dotenv";
 import cors from "cors";
-import path from 'path';
 import session from 'express-session';
 import { renameFile, uploadMiddleware } from './upload';
 import { Routes } from './routes';
 import { AppDataSource } from './data-source';
 import { User } from './entity/User';
+import * as fs from 'fs';
+import * as https from 'https';
+import "reflect-metadata";
 
 dotenv.config();
 AppDataSource.initialize().then(async () => {
+    const key = fs.readFileSync('./key.pem', 'utf8');
+    const cert = fs.readFileSync('./cert.pem', 'utf8');
     const app: Express = express();
 
     app.use(express.json());
@@ -61,6 +65,15 @@ AppDataSource.initialize().then(async () => {
         res.json(user);
     })
 
+    app.use((request, response, next) => {
+        const user = (request.session as any).user as User | undefined;
+        if (!user) {
+            response.status(401).json({ error: 'Unauthorized' })
+            return;
+        }
+        next();
+    });
+
     app.get('/check', async (req, res) => {
         res.json((req.session as any).user);
     })
@@ -80,18 +93,18 @@ AppDataSource.initialize().then(async () => {
         extensions: ['png', 'jpg', 'jpeg']
     }))
     
-    app.get('/', (req: Request, res: Response) => {
-        res.send('Radi');
-    });
 
     for (let route of Routes) {
         app[route.method](route.url, ...route.handler);
     }
 
-    const port = process.env.PORT || 8000
+    // const server = https.createServer({
+    //     key: key,
+    //     cert: cert,
+    // }, app)
 
     app.listen(8000, () => {
-        console.log(`Running on ${port}`);
+        console.log(`Running on 8000`);
     });
     
 }).catch(error => console.log(error))
