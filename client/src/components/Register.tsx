@@ -14,11 +14,18 @@ const model = Schema.Model({
 })
 
 interface Props {
-    onSubmit: (u: Partial<RegisterUser>) => Promise<any>
+    onSubmit: (val: RegisterUser) => Promise<void>
 }
 
 export default function Register(props: Props) {
-    const [formValue, setFormValue] = useState<Partial<RegisterUser>>({})
+    const [formValue, setFormValue] = useState<RegisterUser>({
+      email: '',
+      firstName: '',
+      lastName: '',
+      phone: '',
+      password: '',
+      repeat: ''
+    })
     return (
       <div>
         <h2>Register</h2>
@@ -27,21 +34,15 @@ export default function Register(props: Props) {
           model={model}
           formValue={formValue}
           checkTrigger='none'
-          onChange={setFormValue}
+          onChange={value => {
+            //@ts-ignore
+            setFormValue(value);
+          }}
           onSubmit={async (c) => {
             if (!c) {
               return;
             }
-            try {
-              const { repeat, ...rest } = formValue;
-              await props.onSubmit(rest);
-              setFormValue({});
-            } catch (error: any) {
-              console.log(error);
-              toaster.push(
-                <Message type='error'>{error?.response.data.error}</Message>
-              )
-            }
+            props.onSubmit(formValue);
           }}
         >
           <Form.Group controlId='firstName'>

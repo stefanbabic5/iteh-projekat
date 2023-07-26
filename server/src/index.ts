@@ -9,11 +9,13 @@ import { User } from './entity/User';
 import * as fs from 'fs';
 import * as https from 'https';
 import "reflect-metadata";
+import { UserHandler } from './handler/userHandler';
+import * as jwt from 'jsonwebtoken';
 
-dotenv.config();
+//dotenv.config();
 AppDataSource.initialize().then(async () => {
-    const key = fs.readFileSync('./key.pem', 'utf8');
-    const cert = fs.readFileSync('./cert.pem', 'utf8');
+    //const key = fs.readFileSync('./key.pem', 'utf8');
+    //const cert = fs.readFileSync('./cert.pem', 'utf8');
     const app: Express = express();
 
     app.use(express.json());
@@ -24,59 +26,41 @@ AppDataSource.initialize().then(async () => {
         optionsSuccessStatus:200
     }));
 
-    app.use(session({
-        secret: 'adsfdghsgearfsgrdthftehetrt',
-        resave: false,
-        saveUninitialized: false,
-        cookie: {
-            sameSite: 'none',
-            maxAge: 1000 * 60 * 15,
-            httpOnly: true,
-            secure: true
-        }
-    }))
+    const userHandler = new UserHandler();
+    app.post('/login', userHandler.login);
+    app.post('/register', userHandler.register);
 
-    app.post('/login', async (req, res) => {
-        const user = await AppDataSource.getRepository(User).findOne({
-            where: req.body
-        });
-        if (!user) {
-            res.sendStatus(400);
+    app.use(async (request, response, next) => {
+        const authorization = request.headers.authorization;
+        if (!authorization) {
+            response.sendStatus(400);
+            return
+        }
+        const splited = authorization.split(' ');
+        if (splited.length != 2 || splited[0] !== 'Bearer') {
+            response.sendStatus(400);
             return;
         }
-        (req.session as any).user = user;
-        req.session.save();
-        res.json(user);
-    })
-
-    app.post('/register', async (req, res) => {
-        let user = await AppDataSource.getRepository(User).findOne({
-            where: {
-                email: req.body.email
+        try {
+            const value = jwt.verify(splited[1], 'token123', {maxAge: 600}) as {id:number}
+            const user = await AppDataSource.getRepository(User).findOne({
+                where: {
+                    id: value.id
+                }
+            })
+            if (!user) {
+                response.sendStatus(401);
+                return;
             }
-        });
-        if (user) {
-            res.sendStatus(400);
-            return;
+            (request as any).user = user;
+            next();
+        } catch(error) {
+            response.sendStatus(401);
         }
-        user = await AppDataSource.getRepository(User).save(req.body);
-        (req.session as any).user = user;
-        req.session.save();
-        res.json(user);
-    })
-
-    app.use((request, response, next) => {
-        const user = (request.session as any).user as User | undefined;
-        if (!user) {
-            response.status(401).json({ error: 'Unauthorized' })
-            return;
-        }
-        next();
+        
     });
 
-    app.get('/check', async (req, res) => {
-        res.json((req.session as any).user);
-    })
+    app.get('/check', userHandler.check);
 
     app.post('/logout', async (req, res) => {
         req.session.destroy(err => {})
@@ -107,4 +91,4 @@ AppDataSource.initialize().then(async () => {
         console.log(`Running on 8000`);
     });
     
-}).catch(error => console.log(error))
+}).catch(error => console.log({error: error}))

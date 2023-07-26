@@ -1,13 +1,15 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { User } from "../types";
 import { Avatar, Dropdown, Nav, Navbar } from 'rsuite'
 
 interface Props {
     user: User,
-    onLogout: () => void
+    onLogout: () => void,
+    isAdmin?: boolean
 }
 
 export default function UserNavbar(props: Props) {
+    const navigate = useNavigate();
     return (
         <Navbar>
             <Navbar.Brand>
@@ -22,7 +24,10 @@ export default function UserNavbar(props: Props) {
             <Nav pullRight>
                 <Nav.Item as={NavLink} to='/cart'>Cart</Nav.Item>
                 <Dropdown title={props.user.firstName + ' ' + props.user.lastName}>
-                    <Dropdown.Item onClick={props.onLogout}>Logout</Dropdown.Item>
+                    <Dropdown.Item onClick={() => {
+                        props.onLogout();
+                        navigate('/');
+                    }}>Logout</Dropdown.Item>
                 </Dropdown>
             </Nav>
         </Navbar>

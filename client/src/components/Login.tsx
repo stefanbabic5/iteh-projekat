@@ -9,11 +9,14 @@ const model = Schema.Model({
 })
 
 interface Props {
-    onSubmit: (u: Partial<LoginUser>) => Promise<any>
+    onSubmit: (u: LoginUser) => Promise<any>
 }
 
 export default function Login(props: Props) {
-    const [formValue, setFormValue] = useState<Partial<LoginUser>>({})
+    const [formValue, setFormValue] = useState<LoginUser>({
+        email: '',
+        password: ''
+    });
     return (
         <div>
             <h2>Login</h2>
@@ -22,20 +25,15 @@ export default function Login(props: Props) {
                 model = {model}
                 formValue={formValue}
                 checkTrigger='none'
-                onChange={setFormValue}
-                onSubmit={async (c) => {
+                onChange={value => {
+                    //@ts-ignore
+                    setFormValue(value);
+                  }}
+                onSubmit={(c) => {
                     if (!c) {
                         return;
                     }
-                    try {
-                        await props.onSubmit(formValue);
-                        setFormValue({});
-                    } catch (error: any) {
-                        // console.error(error);
-                        // toaster.push(
-                        //     <Message type='error'>{error?.response.data.error}</Message>
-                        // )
-                    }
+                    props.onSubmit(formValue);
                 }}
             >
                 <Form.Group controlId='email'>

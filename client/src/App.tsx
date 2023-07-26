@@ -1,9 +1,9 @@
-import {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import './App.css';
 import 'rsuite/dist/rsuite.min.css';
 import { CartItems, Item, User } from './types';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
 import Login from './components/Login';
 import Home from './components/Home';
 import Register from './components/Register';
@@ -11,46 +11,61 @@ import UserNavbar from './components/UserNavbar';
 import ShopPage from './components/ShopPage';
 import ItemShowPage from './components/ItemShowPage';
 import CartPage from './components/CartPage';
+import { check, login, logout, register } from './servis/loginServis';
+import { Loader } from 'rsuite';
 
-axios.defaults.withCredentials = true;
 axios.defaults.baseURL = 'http://localhost:8000';
 
 function App() {
     const [user, setUser] = useState<User | undefined>(undefined);
+    const [loading, setLoading] = useState(true);
+    //const navigation = useNavigate();
 
-    useEffect(() => {
-      axios.get('/check').then(res => {
-        setUser(res.data);
-      })
-    }, [])
+    // useEffect(() => {
+    //   check().then(res => {
+    //     setUser(res);
+    //   }).catch((err) => {
+    //     navigation('/')
+    //   }).finally(() => {
+    //     setLoading(false)
+    //   });
+    // }, []);
 
-    const onLogout = async () => {
-      await axios.post('/logout');
-      setUser(undefined);
-    }
+    // useEffect(() => {
+    //   if (!user && !loading) {
+    //     navigation('/');
+    //   }
+    // }, [user, loading])
+    // if (loading) {
+    //   return (
+    //     <Loader />
+    //   )
+    // }
 
-    if (!user) {
-      return (
-        <BrowserRouter>
-          <div className='app-container'>
-            <Routes>
-              <Route path='*' element={<Login onSubmit={async val => {
-                const res = await axios.post('/login', val);
-                setUser(res.data);
-              }}/>} />
-              <Route path='/register' element={<Register onSubmit={async val => {
-                const res = await axios.post('/register', val);
-                setUser(res.data);
-              }} />} />
-            </Routes>
-          </div>
-        </BrowserRouter>
-      )
-    }
+  if (user === undefined) {
+    return (
+      <BrowserRouter>
+        <Routes>
+          <Route path='*' element={<Login onSubmit={async data => {
+            const res = await login(data);
+            setUser(res);
+          }} />} />
+          <Route path='/register' element={<Register onSubmit={async (data) => {
+            const user1 = await register(data);
+            setUser(user1);
+          }} />} />
+        </Routes>
+      </BrowserRouter>
+    )
+  }
+
 
     if (!user.admin) {
       return (
-        <UserApp user={user} onLogout={onLogout} />
+        <UserApp user={user} onLogout={async () => {
+          await logout();
+          setUser(undefined);
+        }} />
       )
     }
   
@@ -82,7 +97,7 @@ function UserApp(props: UserProps) {
     <BrowserRouter>
       <UserNavbar onLogout={props.onLogout} user={props.user} />
       <Routes>
-        <Route path='*' element={(
+        <Route path='/' element={(
           <div className='app-container'>
             <Home />
           </div>

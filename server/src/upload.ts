@@ -30,7 +30,7 @@ export function renameFile(request: Request, res: Response, next?: any) {
         const imgName = 'img/' + v4() + '-' + file.originalname;
         const targetPath = path.resolve(imgName);
         console.log(targetPath);
-        (request as any).fileUrl = 'https://localhost:8000/' + imgName;
+        (request as any).fileUrl = 'http://localhost:8000/' + imgName;
         fs.rename(tempPath, targetPath, (err) => {
             console.log(err);
         })

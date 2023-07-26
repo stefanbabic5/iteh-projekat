@@ -5,12 +5,12 @@ import { ItemGroup } from "../entity/ItemGroup";
 
 export async function getItems(req: Request, res: Response) {
     
-    const groupID = Number(req.query.groupID);
+    const groupId = Number(req.query.groupId);
     const page = Number(req.query.page) || 0;
     const size = Number(req.query.size) || 20;
     const queryBuilder = AppDataSource.getRepository(Item).createQueryBuilder('item').innerJoinAndSelect('item.itemGroup', 'group')
 
-    if(groupID) {
+    if(groupId) {
         let groups = await AppDataSource.getRepository(ItemGroup).find({
             loadRelationIds: {
                 relations: ['parentGroup']
@@ -20,19 +20,19 @@ export async function getItems(req: Request, res: Response) {
             //@ts-ignore
             element.children = groups.filter(e => e.parentGroup === element.id)
         })
-        const gr = groups.find(e => e.id === groupID);
-        let groupIDs = [gr.id];
+        const gr = groups.find(e => e.id === groupId);
+        let groupIds = [gr.id];
         const getIDs = (gr: ItemGroup) => {
             if (!gr) {
                 return;
             }
-            groupIDs = [...groupIDs, ...gr.children.map(e => e.id)];
+            groupIds = [...groupIds, ...gr.children.map(e => e.id)];
             for (let g of gr.children) {
                 getIDs(g);
             }
         }
         getIDs(gr);
-        queryBuilder.where(`group.id IN (:...groupIDs)`).setParameter('groupIDs', groupIDs);
+        queryBuilder.where(`group.id IN (:...groupIds)`).setParameter('groupIds', groupIds);
     }
     queryBuilder.limit(size).offset(page*size);
     const [data, count] = await queryBuilder.getManyAndCount();
