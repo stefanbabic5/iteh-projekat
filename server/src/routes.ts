@@ -10,7 +10,7 @@ interface IRoute {
 }
 
 const isAdmin = (req: Request, res: Response, next: NextFunction) => {
-    if (!(req.session as any).user.admin) {
+    if (!(req as any).user.admin) {
         res.sendStatus(403);
         return;
     }

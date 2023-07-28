@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Item, ItemGroup } from "../types";
+import { Item, ItemGroup, ItemsRes } from "../types";
 import useGet from "../hooks/useGet";
 import { FlexboxGrid } from "rsuite";
 import FlexboxGridItem from "rsuite/esm/FlexboxGrid/FlexboxGridItem";
@@ -16,11 +16,6 @@ function flattenGroups(itemGroups: ItemGroup[]) {
         }
     }
     return arr;
-}
-
-interface ItemsRes {
-    data: Item[],
-    total: number
 }
 
 export default function ShopPage() {
@@ -40,13 +35,13 @@ export default function ShopPage() {
 
     return (
         <FlexboxGrid>
-            <FlexboxGridItem colspan={4}>
+            <FlexboxGridItem colspan={3}>
                 <GroupFilter onSelect={setSelectedGroupId} itemGroups={groups} />
             </FlexboxGridItem>
 
             <FlexboxGridItem colspan={1}>
             </FlexboxGridItem>
-            <FlexboxGridItem colspan={5}>
+            <FlexboxGridItem colspan={12}>
                 <h2 style={{ textTransform: 'capitalize', textAlign: 'center' }}>
                     {getGroupBreadcrumb(flattened.find(e => e.id == selectedGroupId)).substring(3)}
                 </h2>
@@ -54,7 +49,8 @@ export default function ShopPage() {
                     style={{
                     display: 'flex',
                     justifyContent: 'space-between',
-                    flexWrap: 'wrap'
+                    flexWrap: 'wrap',
+                    gap: '20px'
                     }}
                 >
                     {

@@ -2,6 +2,7 @@ import { useNavigate, useParams } from "react-router"
 import useGet from "../hooks/useGet";
 import { Item, Specification } from "../types";
 import { Button, Table } from "rsuite";
+import SpecificationTable from "./SpecificationTable";
 
 interface Props {
     addToCart: (item: Item) => void
@@ -39,36 +40,12 @@ export default function ItemShowPage(props: Props) {
         <div style={{ marginTop: '20px' }}>
           {
             item?.specification && (
-              <SpecTable specification={item.specification} />
+              <SpecificationTable specification={item.specification} />
             )
           }
         </div>
         <Button appearance='primary' style={{ marginTop: '20px' }} onClick={() => { props.addToCart(item!) }}>Add to cart</Button>
       </div>
     </div>
-    )
-}
-
-interface TableProps {
-    specification: Specification
-}
-
-function SpecTable(props: TableProps) {
-    return (
-        <Table
-            cellBordered
-            bordered
-            autoHeight
-            data={Object.keys(props.specification).map(key => ({ name: key, value: props.specification[key] }))}
-        >
-            <Table.Column flexGrow={1}>
-                <Table.HeaderCell>Karakteristika</Table.HeaderCell>
-                <Table.Cell dataKey='name' />
-            </Table.Column>
-            <Table.Column flexGrow={2}>
-                <Table.HeaderCell>Vrednost</Table.HeaderCell>
-                <Table.Cell dataKey='value' />
-            </Table.Column>
-        </Table>
     )
 }

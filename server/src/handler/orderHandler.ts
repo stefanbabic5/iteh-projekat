@@ -7,7 +7,7 @@ import { Item } from "../entity/Item";
 import { OrderItem } from "../entity/OrderItem";
 
 interface OrderItemDto {
-    itemID: number,
+    itemId: number,
     count: number
 }
 
@@ -20,7 +20,7 @@ interface OrderDto {
 export async function createOrder(req: Request, res: Response) {
     
     const body = req.body as OrderDto;
-    const user = (req.session as any).user as User;
+    const user = (req as any).user as User;
     const createdOrder = await AppDataSource.manager.transaction(async manager => {
         const order = await manager.save(Order, {
             status: 'PENDING',
@@ -31,7 +31,7 @@ export async function createOrder(req: Request, res: Response) {
         });
 
         for (let itemDto of body.orderItems) {
-            const item = await manager.findOne(Item, { where: { id: itemDto.itemID } })
+            const item = await manager.findOne(Item, { where: { id: itemDto.itemId } })
             const orderItem = await manager.save(OrderItem, {
                 order: order,
                 count: itemDto.count,
@@ -40,8 +40,9 @@ export async function createOrder(req: Request, res: Response) {
                 item: item
             });
             order.orderItems.push(orderItem);
-            return order;
+            
         }
+        return order;
     });
     
     res.json({

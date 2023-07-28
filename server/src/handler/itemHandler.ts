@@ -22,16 +22,16 @@ export async function getItems(req: Request, res: Response) {
         })
         const gr = groups.find(e => e.id === groupId);
         let groupIds = [gr.id];
-        const getIDs = (gr: ItemGroup) => {
+        const getIds = (gr: ItemGroup) => {
             if (!gr) {
                 return;
             }
             groupIds = [...groupIds, ...gr.children.map(e => e.id)];
             for (let g of gr.children) {
-                getIDs(g);
+                getIds(g);
             }
         }
-        getIDs(gr);
+        getIds(gr);
         queryBuilder.where(`group.id IN (:...groupIds)`).setParameter('groupIds', groupIds);
     }
     queryBuilder.limit(size).offset(page*size);

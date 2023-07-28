@@ -2,8 +2,8 @@ import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import './App.css';
 import 'rsuite/dist/rsuite.min.css';
-import { CartItems, Item, User } from './types';
-import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
+import { CartItems, Item, TargetLocation, User } from './types';
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import Login from './components/Login';
 import Home from './components/Home';
 import Register from './components/Register';
@@ -13,12 +13,14 @@ import ItemShowPage from './components/ItemShowPage';
 import CartPage from './components/CartPage';
 import { check, login, logout, register } from './servis/loginServis';
 import { Loader } from 'rsuite';
+import AdminApp from './components/admin/AdminApp';
 
 axios.defaults.baseURL = 'http://localhost:8000';
 
-function App() {
+export default function App() {
+    //const navigate = useNavigate();
     const [user, setUser] = useState<User | undefined>(undefined);
-    const [loading, setLoading] = useState(true);
+    //const [loading, setLoading] = useState(true);
     //const navigation = useNavigate();
 
     // useEffect(() => {
@@ -45,7 +47,7 @@ function App() {
   if (user === undefined) {
     return (
       <BrowserRouter>
-        <Routes>
+        <Routes>          
           <Route path='*' element={<Login onSubmit={async data => {
             const res = await login(data);
             setUser(res);
@@ -54,6 +56,7 @@ function App() {
             const user1 = await register(data);
             setUser(user1);
           }} />} />
+          <Route path='/*' element={<Navigate to='/'/>}/>
         </Routes>
       </BrowserRouter>
     )
@@ -69,7 +72,12 @@ function App() {
       )
     }
   
-    return null;
+    return (
+      <AdminApp user={user} onLogout={async () => {
+        await logout();
+        setUser(undefined);
+      }} />
+    )
 }
 
 interface UserProps {
@@ -93,6 +101,19 @@ function UserApp(props: UserProps) {
     })
   }
 
+  const orderUp = async (tl: Partial<TargetLocation>) => {
+    await axios.post('/order', {
+      targetLocation: tl,
+      orderItems: Object.keys(cartItems).map((key: string) => {
+        return {
+          itemId: Number(key),
+          count: cartItems[key as any].count
+        }
+      })
+    });
+    setCartItems({});
+  }
+
   return (
     <BrowserRouter>
       <UserNavbar onLogout={props.onLogout} user={props.user} />
@@ -105,7 +126,9 @@ function UserApp(props: UserProps) {
         <Route path='/shop' element={(<ShopPage />)} />
         <Route path='/cart' element={(
           <div className='app-container'>
-            <CartPage cartItems={cartItems}
+            <CartPage 
+              onSubmit={orderUp}
+              cartItems={cartItems}
               onItemChange={(item, val) => {
                 changeItem(item, val, false);
               }}
@@ -124,4 +147,4 @@ function UserApp(props: UserProps) {
   )
 }
 
-export default App;
+//export default App;

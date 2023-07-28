@@ -10,7 +10,7 @@ export default function ItemCard(props: Props) {
             <img src = {props.item.imageUrl} alt={props.item.name} width='100%' height='350' />
             <div>
                 <h2>{props.item.name}</h2>
-                <h3>{props.item.price}</h3>
+                <h3>{props.item.price} RSD</h3>
                 <p>{props.item.description}</p>
             </div>
         </div>
