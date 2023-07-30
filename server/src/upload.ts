@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import multer from "multer";
+import * as multer from "multer";
 import * as path from "path";
 import { v4 } from "uuid";
 import * as fs from "fs";
@@ -32,8 +32,11 @@ export function renameFile(request: Request, res: Response, next?: any) {
         console.log(targetPath);
         (request as any).fileUrl = 'http://localhost:8000/' + imgName;
         fs.rename(tempPath, targetPath, (err) => {
-            console.log(err);
+            if (err) {
+                console.error('Error naming the file: ', err);
+                res.sendStatus(500).json({error: "File rename failed"});
+                return;
+            }
         })
-        next();
-    
+        next();  
 }

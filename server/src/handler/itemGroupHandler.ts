@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { AppDataSource } from "../data-source";
 import { ItemGroup } from "../entity/ItemGroup";
 
-export async function getAllGroups(req: Request, res: Response) {
+export async function getBaseGroups(req: Request, res: Response) {
     let groups = await AppDataSource.getRepository(ItemGroup).find({
         loadRelationIds: {
             relations: ['parentGroup']
@@ -13,6 +13,15 @@ export async function getAllGroups(req: Request, res: Response) {
         element.children = groups.filter(e => e.parentGroup === element.id)
     })
     res.json(groups.filter(e => !e.parentGroup))
+}
+
+export async function getAllGroups(req: Request, res: Response) {
+    let groups = await AppDataSource.getRepository(ItemGroup).find({
+        loadRelationIds: {
+            relations: ['parentGroup']
+        }
+    })
+    res.json(groups);
 }
 
 export async function createGroup(req: Request, res: Response) {

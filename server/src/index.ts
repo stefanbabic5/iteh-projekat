@@ -1,7 +1,7 @@
-import express, { Express, Request, Response } from 'express';
-import dotenv from "dotenv";
-import cors from "cors";
-import session from 'express-session';
+import * as express from 'express';
+import * as dotenv from "dotenv";
+import * as cors from "cors";
+import * as session from 'express-session';
 import { renameFile, uploadMiddleware } from './upload';
 import { Routes } from './routes';
 import { AppDataSource } from './data-source';
@@ -16,7 +16,7 @@ import * as jwt from 'jsonwebtoken';
 AppDataSource.initialize().then(async () => {
     //const key = fs.readFileSync('./key.pem', 'utf8');
     //const cert = fs.readFileSync('./cert.pem', 'utf8');
-    const app: Express = express();
+    const app = express();
 
     app.use(express.json());
     app.use(cors({
@@ -42,7 +42,7 @@ AppDataSource.initialize().then(async () => {
             return;
         }
         try {
-            const value = jwt.verify(splited[1], 'token123', {maxAge: 600}) as {id:number}
+            const value = jwt.verify(splited[1], 'token123', {maxAge: 3600}) as {id:number}
             const user = await AppDataSource.getRepository(User).findOne({
                 where: {
                     id: value.id
