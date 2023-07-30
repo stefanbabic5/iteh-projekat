@@ -4,6 +4,7 @@ import { Button, Form, IconButton, Input, InputPicker, Modal, Schema, Uploader }
 import ImageIcon from '@rsuite/icons/Image';
 import PlusIcon from '@rsuite/icons/Plus';
 import SpecificationTable from "../SpecificationTable";
+import ImageUpload from "./ImageUpload";
 
 interface Props {
     item?: Item,
@@ -143,16 +144,7 @@ export default function ItemForm(props: Props) {
                         }}
                     />
                 </div>
-                <div style={{ flex: 1, paddingLeft: "20px"}}>
-                    <Uploader
-                        draggable
-                        action='http://localhost:8000/upload'
-                        name='img'                    
-                        onSuccess={(response) => {
-                            setImageUrl(response.data.fileUrl)                                  
-                        }}
-                        className='fluid'
-                    >
+                <div style={{ flex: 1, paddingLeft: "20px"}}>                     
                         <div
                             style={{
                                 backgroundImage: `url(${imageUrl || ''})`,
@@ -168,8 +160,10 @@ export default function ItemForm(props: Props) {
                                     <ImageIcon style={{ width: '100px', height: '100px' }}/>
                                 )
                             }
+                            
                         </div>
-                    </Uploader>
+                        <ImageUpload onSuccess={(response) => setImageUrl(response.data.fileUrl)}/>
+                    
                 </div>
             </Modal.Body>
         </Modal>
