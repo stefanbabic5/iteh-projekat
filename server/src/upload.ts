@@ -28,7 +28,7 @@ export function renameFile(request: Request, res: Response, next?: any) {
         const file = request.files['img'][0];
         const tempPath = file.path;
         //+ v4() + '-'
-        const imgName = 'img/'  + file.originalname;
+        const imgName = 'img/' + v4() + '-' + file.originalname;
         const targetPath = path.resolve(imgName);
         console.log(targetPath);
         (request as any).fileUrl = 'http://localhost:8080/projekatIteh/server/' + imgName;

@@ -28,8 +28,9 @@ export default function Register(props: Props) {
     })
     return (
       <div>
-        <h2>Register</h2>
+        <h2 className='loginReg'>Register</h2>
         <Form
+          className='loginRegForma'
           fluid
           model={model}
           formValue={formValue}

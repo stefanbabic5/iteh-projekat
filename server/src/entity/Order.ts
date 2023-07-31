@@ -33,7 +33,7 @@ export class Order {
     rejectedAt: Date;
 
     @Column()
-    delivereddAt: Date;
+    deliveredAt: Date;
 
     @ManyToOne(() => User)
     user: User;

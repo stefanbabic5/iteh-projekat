@@ -25,7 +25,7 @@ export interface Order {
     status: 'PENDING' | 'ACCEPTED' | 'REJECTED' | 'DELIVERED',
     acceptedAt: string,
     rejectedAt: string,
-    delivereddAt: string,
+    deliveredAt: string,
     user: User,
     orderItems: OrderItem[]
 }

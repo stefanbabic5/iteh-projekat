@@ -19,8 +19,9 @@ export default function Login(props: Props) {
     });
     return (
         <div>
-            <h2>Login</h2>
+            <h2 className="loginReg">Login</h2>
             <Form
+                className="loginRegForma"
                 fluid
                 model = {model}
                 formValue={formValue}

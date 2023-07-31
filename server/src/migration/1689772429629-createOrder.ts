@@ -7,7 +7,7 @@ export class CreateOrder1689772429629 implements MigrationInterface {
         await queryRunner.query(`CREATE TABLE \`order\` (\`id\` int NOT NULL AUTO_INCREMENT, \`targetLocation\` 
         json NOT NULL, \`status\` enum ('PENDING', 'ACCEPTED', 'REJECTED', 'DELIVERED') NOT NULL, \`createdAt\` 
         datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6), \`acceptedAt\` datetime NOT NULL, \`rejectedAt\` datetime NOT NULL, 
-        \`delivereddAt\` datetime NOT NULL, \`userId\` int NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
+        \`deliveredAt\` datetime NOT NULL, \`userId\` int NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
         await queryRunner.query(`ALTER TABLE \`order\` ADD CONSTRAINT \`FK_caabe91507b3379c7ba73637b84\` 
         FOREIGN KEY (\`userId\`) REFERENCES \`user\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
     }
