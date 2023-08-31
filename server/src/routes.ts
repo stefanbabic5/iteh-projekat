@@ -26,15 +26,15 @@ export const Routes: IRoute[] = [
     }, {
         method: 'get',
         url: '/admin/item-group',
-        handler: [getAllGroups]
+        handler: [isAdmin, getAllGroups]
     }, {
         method: 'post',
         url: '/item-group',
-        handler: [createGroup]
+        handler: [isAdmin, createGroup]
     }, {
         method: 'delete',
         url: '/item-group/:id',
-        handler: [deleteGroup]
+        handler: [isAdmin, deleteGroup]
     }, {
         method: 'get',
         url: '/item',

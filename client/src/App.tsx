@@ -20,29 +20,36 @@ axios.defaults.baseURL = 'http://localhost:8000';
 export default function App() {
     //const navigate = useNavigate();
     const [user, setUser] = useState<User | undefined>(undefined);
-    //const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(true);
     //const navigation = useNavigate();
 
-    // useEffect(() => {
-    //   check().then(res => {
-    //     setUser(res);
-    //   }).catch((err) => {
-    //     navigation('/')
-    //   }).finally(() => {
-    //     setLoading(false)
-    //   });
-    // }, []);
+    useEffect(() => {
+      check().then(res => {
+        setUser(res);
+      }).catch((err) => {
+       // navigation('/')
+      }).finally(() => {
+        setLoading(false)
+      });
+    }, []);
 
-    // useEffect(() => {
-    //   if (!user && !loading) {
-    //     navigation('/');
-    //   }
-    // }, [user, loading])
-    // if (loading) {
-    //   return (
-    //     <Loader />
-    //   )
-    // }
+    useEffect(() => {
+      if (!user && !loading) {
+        //navigation('/');
+      }
+    }, [user, loading])
+    if (loading) {
+      return (
+        <Loader />
+      )
+    }
+  // useEffect(() => {
+  //   check().then(res=>{
+  //     setUser(res.data);
+  //   }).catch((err)=> {
+  //     console.log(err)
+  //   })
+  // })
 
   if (user === undefined) {
     return (

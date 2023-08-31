@@ -11,8 +11,10 @@
 .item-card{
   margin-bottom: 20px;
   padding: 20px;
-  border: 1px #142041 solid;
+  color: black;
+  border: 1px #000 solid;
   border-radius: 10px;
+  width: 15vw;
 }
 
 .fluid>div{
@@ -37,4 +39,16 @@
 
 .loginRegForma {
   padding: 0 50px 0 50px;
+}
+
+.item-card h2 {
+  font-size: 18px;
+}
+
+.item-card h3 {
+  font-size: 25px;
+}
+
+.item-card :hover {
+  color: blue;
 }

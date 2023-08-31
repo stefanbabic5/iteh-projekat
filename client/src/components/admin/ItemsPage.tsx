@@ -6,12 +6,12 @@ import axios from "axios";
 import ItemForm from "./ItemForm";
 import { Button, ButtonGroup, ButtonToolbar, Pagination, Table } from "rsuite";
 
-const pageSizeOptions = [10, 20, 30, 50];
+const pageSizeOptions = [5, 10, 20, 30];
 const layout = ["total", "-", "limit", "pager"] as any;
 
 export default function ItemsPage() {
     const [page, setPage] = useState(0);
-    const [size, setSize] = useState(20);
+    const [size, setSize] = useState(5);
     const [openModal, setOpenModal] = useState(false);
     const [groups, setGroups] = useGet<ItemGroup[]>('/admin/item-group', []);
     const [selectedItemId, setSelectedItemId] = useState(0);
@@ -114,7 +114,7 @@ export default function ItemsPage() {
                 onChangePage={(page) => {
                     setPage(page-1);
                 }}
-                size="xs"
+                size="lg"
                 layout={layout}
                 total={items.total}
                 maxButtons={5}

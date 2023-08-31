@@ -13,7 +13,7 @@ interface ItemProps {
 
 export default function GroupFilter(props: Props) {
     return (
-        <Sidenav style={{ color: 'purple', border: '1px purple solid', fontWeight: '800', height: '100%' }} appearance='subtle'>
+        <Sidenav style={{ color: 'black', border: '2px black solid', fontWeight: '800', height: '100%' }} appearance='subtle'>
             <Sidenav.Body>
                 <Nav>
                     {

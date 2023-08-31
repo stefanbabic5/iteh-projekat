@@ -35,13 +35,13 @@ export default function ShopPage() {
 
     return (
         <FlexboxGrid>
-            <FlexboxGridItem colspan={3}>
+            <FlexboxGridItem colspan={4}>
                 <GroupFilter onSelect={setSelectedGroupId} itemGroups={groups} />
             </FlexboxGridItem>
 
             <FlexboxGridItem colspan={1}>
             </FlexboxGridItem>
-            <FlexboxGridItem colspan={12}>
+            <FlexboxGridItem colspan={16}>
                 <h2 style={{ textTransform: 'capitalize', textAlign: 'center' }}>
                     {getGroupBreadcrumb(flattened.find(e => e.id == selectedGroupId)).substring(3)}
                 </h2>
